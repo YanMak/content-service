@@ -1,0 +1,10 @@
+version: '3'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    restart: always
+    container_name: content-service-api
+    ports:
+      - 3000:3000
