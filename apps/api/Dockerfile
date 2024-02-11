@@ -10,4 +10,5 @@ WORKDIR /opt/app
 ADD package.json ./
 RUN npm install --only=prod
 COPY --from=build /opt/app/dist/apps/api ./dist
+EXPOSE 3000
 CMD ["node", "./dist/main.js"]
