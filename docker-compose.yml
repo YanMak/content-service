@@ -7,4 +7,4 @@ services:
     restart: always
     container_name: content-service-api
     ports:
-      - 3000:3000
+      - 3002:3000
