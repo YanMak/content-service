@@ -1,0 +1,24 @@
+{
+  "name": "converter",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/converter/src",
+  "projectType": "application",
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "converter:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "converter:build:development"
+        },
+        "production": {
+          "buildTarget": "converter:build:production"
+        }
+      }
+    }
+  },
+  "tags": []
+}
