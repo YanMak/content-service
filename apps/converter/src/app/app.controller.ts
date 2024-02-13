@@ -22,6 +22,10 @@ export class AppController {
     options,
   }: GenerateImages.Request): Promise<GenerateImages.Response> {
     const jobNumber = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+    Logger.log('@RMQRoute(GenerateImages.Topic): options');
+    Logger.log(options);
+    Logger.log('@RMQRoute(GenerateImages.Topic): requirements');
+    Logger.log(requirements);
     Logger.log(`[${AppController.instance}][${jobNumber}] Start generate...`);
     const t0 = performance.now();
     try {

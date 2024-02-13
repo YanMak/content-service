@@ -5,12 +5,13 @@ export const getRMQConfig = (): IRMQServiceAsyncOptions => ({
   inject: [ConfigService],
   imports: [ConfigModule],
   useFactory: (configService: ConfigService) => ({
-    exchangeName: configService.get('AMQP_EXCHANGE') ?? '',
+    exchangeName: configService.get('AMQP_EXCHANGE_API') ?? '',
     connections: [
       {
-        login: configService.get('AMQP_USER') ?? '',
-        password: configService.get('AMQP_PASSWORD') ?? '',
-        host: configService.get('AMQP_HOSTNAME') ?? '',
+        login: configService.get('AMQP_USER_API') ?? '',
+        password: configService.get('AMQP_PASSWORD_API') ?? '',
+        host: configService.get('AMQP_HOSTNAME_API') ?? '',
+        port: 5672,
       },
     ],
     prefetchCount: 32,
