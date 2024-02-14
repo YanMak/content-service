@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@content-service/contracts": ["libs/contracts/src/index.ts"],
+      "@content-service/helpers": ["libs/helpers/src/index.ts"],
       "@content-service/interfaces": ["libs/interfaces/src/index.ts"]
     }
   },

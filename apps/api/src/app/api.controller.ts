@@ -22,6 +22,8 @@ import { Get } from '@nestjs/common';
 import { GenerateImages } from '@content-service/contracts';
 
 import 'multer';
+import { getFileExtension } from '../../../../libs/helpers/src/lib/file-extension';
+import { getFilenameForS3 } from '@content-service/helpers';
 //import * as Express from ''
 
 @Controller()
@@ -36,6 +38,67 @@ export class ApiController {
     return { status: 'ok' };
   }
 
+  @Post('upload_s3')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadS3(
+    @UploadedFile() file: Express.Multer.File,
+    @Query() params: PayloadDto
+  ): Promise<S3CDNElementResponse> {
+    const saveFile: MFile = new MFile(file);
+    if (!file.mimetype.includes('image')) {
+      throw new BadRequestException('Неверный формат файла');
+    }
+    Logger.log('export class ApiController { async upload_s3( -----');
+    const { buffer, ...params_ } = file;
+    Logger.log(params_);
+    const { name, extension } = getFileExtension(file.originalname);
+    Logger.log(`file extension ${JSON.stringify({ name, extension })}`);
+    Logger.log('filename for s3 ' + getFilenameForS3(name));
+    Logger.log({
+      width: Number(params.width),
+      height: Number(params.height),
+      quality: Number(params.quality),
+      format: params.type,
+    });
+    Logger.log(') --------- export class ApiController { async uploadFile)');
+
+    const dataforRabbit = {
+      image: saveFile.buffer.toString('base64'),
+      originalName: `${getFilenameForS3(name)}.${extension}`,
+      requirements: [
+        {
+          width: Number(params.width),
+          height: Number(params.height),
+          quality: Number(params.quality),
+          format: params.type,
+        },
+      ],
+    };
+    const { image, ...dataWOimage } = dataforRabbit;
+    //Logger.log('file');
+    //Logger.log(file.originalname);
+    Logger.log(dataWOimage);
+    //Logger.log('_____________');
+
+    //return {} as S3CDNElementResponse;
+
+    const res = await this.rmqService.send<
+      GenerateImages.Request,
+      GenerateImages.Response
+    >(GenerateImages.Topic, dataforRabbit);
+
+    //return this.filesService.saveFile(
+    this.filesService.saveFile(
+      new MFile({
+        originalname: file.originalname.split('.')[0] + '.' + params.type,
+        buffer: Buffer.from(res.images[0].image),
+      })
+    );
+    const { s3, cdn } = res;
+    return { s3, cdn };
+  }
+
+  /*
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
@@ -59,6 +122,7 @@ export class ApiController {
       GenerateImages.Response
     >(GenerateImages.Topic, {
       image: saveFile.buffer.toString('base64'),
+      originalName: file.originalname,
       requirements: [
         {
           width: Number(params.width),
@@ -77,48 +141,5 @@ export class ApiController {
     );
     //const { s3, cdn } = res;
     //return { s3, cdn };
-  }
-
-  @Post('upload_s3')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadS3(
-    @UploadedFile() file: Express.Multer.File,
-    @Query() params: PayloadDto
-  ): Promise<S3CDNElementResponse> {
-    const saveFile: MFile = new MFile(file);
-    if (!file.mimetype.includes('image')) {
-      throw new BadRequestException('Неверный формат файла');
-    }
-    Logger.log('export class ApiController { async uploadFile( -----');
-    Logger.log({
-      width: Number(params.width),
-      height: Number(params.height),
-      quality: Number(params.quality),
-      format: params.type,
-    });
-    Logger.log(') --------- export class ApiController { async uploadFile)');
-    const res = await this.rmqService.send<
-      GenerateImages.Request,
-      GenerateImages.Response
-    >(GenerateImages.Topic, {
-      image: saveFile.buffer.toString('base64'),
-      requirements: [
-        {
-          width: Number(params.width),
-          height: Number(params.height),
-          quality: Number(params.quality),
-          format: params.type,
-        },
-      ],
-    });
-    //return this.filesService.saveFile(
-    this.filesService.saveFile(
-      new MFile({
-        originalname: file.originalname.split('.')[0] + '.' + params.type,
-        buffer: Buffer.from(res.images[0].image),
-      })
-    );
-    const { s3, cdn } = res;
-    return { s3, cdn };
-  }
+  }*/
 }

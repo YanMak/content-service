@@ -17,6 +17,7 @@ export namespace GenerateImages {
 
   export class Request {
     image: string;
+    originalName: string;
     requirements: ImageRequirement[];
     options?: ImageOptions;
   }

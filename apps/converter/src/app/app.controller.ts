@@ -23,7 +23,7 @@ export class AppController {
 
   @RMQRoute(GenerateImages.Topic)
   async generateImage(
-    { image, requirements, options }: GenerateImages.Request,
+    { image, originalName, requirements, options }: GenerateImages.Request,
     @RMQMessage msg: Message
   ): Promise<GenerateImages.Response> {
     const jobNumber = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
@@ -57,7 +57,8 @@ export class AppController {
       //const buffForS3 = bufferImage;
       const buffForS3 = Buffer.from(images.concat([transformedImage])[0].image);
 
-      const file_originalname = 'image001.jpg';
+      //const file_originalname = 'image001.jpg';
+      const file_originalname = originalName;
       console.log(`original name ${file_originalname}`);
       const [originalname] = file_originalname.split('.');
       const s3UploadResult = await this.s3Service.uploadBuffer(
