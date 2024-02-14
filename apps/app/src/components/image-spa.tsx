@@ -82,7 +82,7 @@ function App() {
           fileListVisible={false}
           multiple={false}
           //action={`${process.env.REACT_APP_API_URL}/upload?width=${payload.width}&height=${payload.height}&quality=${payload.quality}&type=${payload.type}`}
-          action={`http://localhost:3000/upload?width=${payload.width}&height=${payload.height}&quality=${payload.quality}&type=${payload.type}`}
+          action={`http://localhost:3000/upload_s3?width=${payload.width}&height=${payload.height}&quality=${payload.quality}&type=${payload.type}`}
           onSuccess={uploadedFile}
         >
           <button style={{ width: '100%', marginTop: 10, height: 200 }}>

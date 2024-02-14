@@ -1,27 +1,34 @@
 import { Controller, Logger } from '@nestjs/common';
-import { RMQRoute } from 'nestjs-rmq';
-import { GenerateService } from './generate.service';
+import { Message, RMQMessage, RMQRoute } from 'nestjs-rmq';
+import { GenerateService } from './generator/generate.service';
 import { performance } from 'perf_hooks';
 import {
   GenerateImages,
   ImageRequirement,
   ImageResult,
 } from '@content-service/contracts';
+import { S3Service } from './s3/s3.service';
+import { CDNService } from './cdn/cdn.service';
 
 @Controller()
 export class AppController {
   private static instance: number =
     Math.floor(Math.random() * (999 - 100 + 1)) + 100;
 
-  constructor(private readonly generateService: GenerateService) {}
+  constructor(
+    private readonly generateService: GenerateService,
+    private readonly s3Service: S3Service,
+    private readonly cdnService: CDNService
+  ) {}
 
   @RMQRoute(GenerateImages.Topic)
-  async generateImage({
-    image,
-    requirements,
-    options,
-  }: GenerateImages.Request): Promise<GenerateImages.Response> {
+  async generateImage(
+    { image, requirements, options }: GenerateImages.Request,
+    @RMQMessage msg: Message
+  ): Promise<GenerateImages.Response> {
     const jobNumber = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+    Logger.log('@RMQRoute(GenerateImages.Topic): @RMQMessage msg: Message');
+    Logger.log(msg.properties);
     Logger.log('@RMQRoute(GenerateImages.Topic): options');
     Logger.log(options);
     Logger.log('@RMQRoute(GenerateImages.Topic): requirements');
@@ -34,6 +41,7 @@ export class AppController {
         bufferImage,
         options
       );
+
       const images = await Promise.all(
         requirements.map(
           async (requirement: ImageRequirement): Promise<ImageResult> => {
@@ -45,7 +53,26 @@ export class AppController {
           }
         )
       );
-      return { images: images.concat([transformedImage]) };
+
+      //const buffForS3 = bufferImage;
+      const buffForS3 = Buffer.from(images.concat([transformedImage])[0].image);
+
+      const file_originalname = 'image001.jpg';
+      console.log(`original name ${file_originalname}`);
+      const [originalname] = file_originalname.split('.');
+      const s3UploadResult = await this.s3Service.uploadBuffer(
+        buffForS3 as Buffer,
+        originalname + '.webp'
+      );
+
+      //Logger.log('images.concat([transformedImage])');
+      //Logger.log(images.concat([transformedImage]));
+
+      return {
+        images: images.concat([transformedImage]),
+        s3: s3UploadResult,
+        cdn: this.cdnService.getCDNUrl(s3UploadResult),
+      };
     } catch (error) {
       Logger.error(error);
       throw error;
