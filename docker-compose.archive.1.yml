@@ -10,7 +10,19 @@ services:
       - ./uploads:/opt/app/uploads
     container_name: content-service-api
     ports:
-      - 3000:3000
+      - 3002:3000
+  rmq:
+    image: rabbitmq:3-management
+    container_name: content-service-rmq-management
+    restart: always
+    ports:
+      - '5673:5672'
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    extends:
+      file: docker-compose.dev.yml
+      service: rmq
   converter:
     build:
       context: .
@@ -19,4 +31,5 @@ services:
     container_name: content-service-converter
     volumes:
       - ./envs:/opt/app/envs
-
+    depends_on:
+      - rmq
