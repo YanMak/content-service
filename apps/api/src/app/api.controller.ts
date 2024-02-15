@@ -47,7 +47,7 @@ export class ApiController {
     if (!file.mimetype.includes('image')) {
       throw new BadRequestException('Неверный формат файла');
     }
-    Logger.log('export class ApiController { async upload_s3( -----');
+    //Logger.log('export class ApiController { async upload_s3( -----');
     const { buffer, ...params_ } = file;
     //Logger.log(params_);
     const { name, extension } = getFileExtension(file.originalname);
