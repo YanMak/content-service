@@ -59,7 +59,7 @@ export class AppController {
 
       //const file_originalname = 'image001.jpg';
       const file_originalname = originalName;
-      console.log(`original name ${file_originalname}`);
+      //console.log(`original name ${file_originalname}`);
       const [originalname] = file_originalname.split('.');
       const s3UploadResult = await this.s3Service.uploadBuffer(
         buffForS3 as Buffer,
@@ -80,7 +80,9 @@ export class AppController {
     } finally {
       const t1 = performance.now();
       Logger.log(
-        `[${AppController.instance}][${jobNumber}] Generation completed in ${
+        `[${
+          AppController.instance
+        }][${jobNumber}] ${originalName} Generation completed in ${
           t1 - t0
         } milliseconds.`
       );
