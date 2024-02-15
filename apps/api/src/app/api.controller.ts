@@ -51,7 +51,7 @@ export class ApiController {
     const { buffer, ...params_ } = file;
     //Logger.log(params_);
     const { name, extension } = getFileExtension(file.originalname);
-    Logger.log(`file extension ${JSON.stringify({ name, extension })}`);
+    //Logger.log(`file extension ${JSON.stringify({ name, extension })}`);
     //Logger.log('filename for s3 ' + getFilenameForS3(name));
     //Logger.log({
     //  width: Number(params.width),
