@@ -13,7 +13,7 @@ export class S3Service {
   async uploadFile(file) {
     const { originalname } = file;
 
-    console.log(`originalname=${originalname} file.mimetype=${file.mimetype}`);
+    //console.log(`originalname=${originalname} file.mimetype=${file.mimetype}`);
 
     await this.s3_upload(
       file.buffer,
@@ -28,7 +28,7 @@ export class S3Service {
     originalname: string,
     mimetype = 'image/webp'
   ): Promise<AWS.S3.ManagedUpload.SendData> {
-    console.log(`originalname=${originalname} file.mimetype=${mimetype}`);
+    //console.log(`originalname=${originalname} file.mimetype=${mimetype}`);
     return await this.s3_upload(
       buffer,
       this.AWS_S3_BUCKET,
@@ -55,22 +55,22 @@ export class S3Service {
       },
     };
 
-    console.log(params);
+    //console.log(params);
 
     let s3Response: AWS.S3.ManagedUpload.SendData =
       {} as AWS.S3.ManagedUpload.SendData;
     try {
       s3Response = await this.s3.upload(params).promise();
 
-      Logger.log(`s3Response`);
-      console.log(s3Response);
+      //Logger.log(`s3Response`);
+      //console.log(s3Response);
 
       requestIdleCallback;
     } catch (e) {
       console.log(e);
     }
 
-    Logger.log(`return s3Response;`);
+    //Logger.log(`return s3Response;`);
     return s3Response;
   }
 }

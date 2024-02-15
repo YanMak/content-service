@@ -22,8 +22,7 @@ import { Get } from '@nestjs/common';
 import { GenerateImages } from '@content-service/contracts';
 
 import 'multer';
-import { getFileExtension } from '../../../../libs/helpers/src/lib/file-extension';
-import { getFilenameForS3 } from '@content-service/helpers';
+import { getFileExtension, getFilenameForS3 } from '@content-service/helpers';
 //import * as Express from ''
 
 @Controller()
@@ -50,17 +49,17 @@ export class ApiController {
     }
     Logger.log('export class ApiController { async upload_s3( -----');
     const { buffer, ...params_ } = file;
-    Logger.log(params_);
+    //Logger.log(params_);
     const { name, extension } = getFileExtension(file.originalname);
     Logger.log(`file extension ${JSON.stringify({ name, extension })}`);
-    Logger.log('filename for s3 ' + getFilenameForS3(name));
-    Logger.log({
-      width: Number(params.width),
-      height: Number(params.height),
-      quality: Number(params.quality),
-      format: params.type,
-    });
-    Logger.log(') --------- export class ApiController { async uploadFile)');
+    //Logger.log('filename for s3 ' + getFilenameForS3(name));
+    //Logger.log({
+    //  width: Number(params.width),
+    //  height: Number(params.height),
+    //  quality: Number(params.quality),
+    //  format: params.type,
+    //});
+    //Logger.log(') --------- export class ApiController { async uploadFile)');
 
     const dataforRabbit = {
       image: saveFile.buffer.toString('base64'),
@@ -77,7 +76,7 @@ export class ApiController {
     const { image, ...dataWOimage } = dataforRabbit;
     //Logger.log('file');
     //Logger.log(file.originalname);
-    Logger.log(dataWOimage);
+    //Logger.log(dataWOimage);
     //Logger.log('_____________');
 
     //return {} as S3CDNElementResponse;
