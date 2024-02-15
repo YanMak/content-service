@@ -65,7 +65,7 @@ export class S3Service {
       //Logger.log(`s3Response`);
       //console.log(s3Response);
 
-      requestIdleCallback;
+      //requestIdleCallback;
     } catch (e) {
       console.log(e);
     }
