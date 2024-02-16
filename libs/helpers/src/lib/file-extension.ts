@@ -12,7 +12,7 @@ export const getFileExtension = (filename: string) => {
       //Logger.log(filename.charAt(i));
       //Logger.log(filename.substring(i));
       return {
-        name: filename.substring(0, i - 1),
+        name: filename.substring(0, i),
         extension: filename.substring(i + 1),
       };
       return;
