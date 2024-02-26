@@ -9,6 +9,7 @@ import {
 } from '@content-service/contracts';
 import { S3Service } from './s3/s3.service';
 import { CDNService } from './cdn/cdn.service';
+import { mimetype } from './helpers/mimetype';
 
 @Controller()
 export class AppController {
@@ -63,7 +64,9 @@ export class AppController {
       const [originalname] = file_originalname.split('.');
       const s3UploadResult = await this.s3Service.uploadBuffer(
         buffForS3 as Buffer,
-        originalname + '.webp'
+        //originalname + '.webp'
+        originalname + '.' + requirements[0].format,
+        mimetype(requirements[0].format)
       );
 
       //Logger.log('images.concat([transformedImage])');

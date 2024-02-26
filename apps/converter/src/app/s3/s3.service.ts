@@ -28,7 +28,7 @@ export class S3Service {
     originalname: string,
     mimetype = 'image/webp'
   ): Promise<AWS.S3.ManagedUpload.SendData> {
-    //console.log(`originalname=${originalname} file.mimetype=${mimetype}`);
+    console.log(`originalname=${originalname} file.mimetype=${mimetype}`);
     return await this.s3_upload(
       buffer,
       this.AWS_S3_BUCKET,
